@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # from pathlib import Path
 # from openai import OpenAI
 
@@ -13,6 +14,7 @@
 #     response.stream_to_file(speech_file_path)
 
 import asyncio
+import argparse
 from pathlib import Path
 from datetime import datetime
 
@@ -24,17 +26,17 @@ asyncopenai = AsyncOpenAI()
 
 # input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development."""
 
-input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development. You're no longer designing deterministic systems where inputs map to predictable outputs. Instead, you're working with probabilistic systems which are inherently unpredictable.
-
-The key tool for managing this uncertainty is evals. Evals are the AI engineer's unit tests. They are how you wrangle predictability from a probabilistic system. They are an indispensable part of productionizing any AI app.
-
-Let's break down what evals are, and why AI apps need them so badly.
-
-Traditional software testing relies on deterministic relationships between inputs and outputs. Each component has a clear domain of responsibility:
-
-But LLM-powered systems are different. Every input goes through a complex transformation process that's hard to predict:
-
-In AI systems, no change is small. Their attention and transformation mechanisms are inscrutable."""
+# input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development. You're no longer designing deterministic systems where inputs map to predictable outputs. Instead, you're working with probabilistic systems which are inherently unpredictable.
+#
+# The key tool for managing this uncertainty is evals. Evals are the AI engineer's unit tests. They are how you wrangle predictability from a probabilistic system. They are an indispensable part of productionizing any AI app.
+#
+# Let's break down what evals are, and why AI apps need them so badly.
+#
+# Traditional software testing relies on deterministic relationships between inputs and outputs. Each component has a clear domain of responsibility:
+#
+# But LLM-powered systems are different. Every input goes through a complex transformation process that's hard to predict:
+#
+# In AI systems, no change is small. Their attention and transformation mechanisms are inscrutable."""
 
 pirate = """Voice: Deep and rugged, with a hearty, boisterous quality, like a seasoned sea captain who's seen many voyages.
 
@@ -73,34 +75,43 @@ reasonable_voices = [
     "sage", # Slower American Woman (Arquette) good emo, bad mad-scientist
 ]
 
-def file_out() -> None:
+def file_out(text_input: str) -> None:
     # This is a small edit to demonstrate file changes.
     voice = reasonable_voices[2]
     instructor = "pirate"
-    file_name_input = "_".join(input.split()[:4]).lower()
+    file_name_input = "_".join(text_input.split()[:4]).lower()
     timestamp = datetime.now().strftime('%Y%m%d_%H%M')
     file_name = f"{voice}_{instructor}_{file_name_input}_{timestamp}.mp3"
     speech_file_path = Path(__file__).parent / "out" / file_name
     with openai.audio.speech.with_streaming_response.create(
       model="gpt-4o-mini-tts",
       voice=voice,
-      input=input,
+      input=text_input,
       instructions=instructors[instructor],
     ) as response:
       response.stream_to_file(speech_file_path)
 
 
-async def stream_out() -> None:
+async def stream_out(text_input: str) -> None:
     async with asyncopenai.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
         voice=reasonable_voices[2],
-        input=input,
+        input=text_input,
         instructions=mad_scientist,
         response_format="pcm",
     ) as response:
         await LocalAudioPlayer().play(response)
 
 if __name__ == "__main__":
-    file_out()
-    # asyncio.run(stream_out())
+    parser = argparse.ArgumentParser(description="Convert text to speech.")
+    parser.add_argument("input_file", type=str, help="Path to the input text file.")
+    parser.add_argument("--stream", action="store_true", help="Stream audio instead of saving to file.")
+    args = parser.parse_args()
 
+    with open(args.input_file, 'r') as f:
+        text_content = f.read()
+
+    if args.stream:
+        asyncio.run(stream_out(text_content))
+    else:
+        file_out(text_content))
