@@ -35,20 +35,34 @@ Before running `main.py`, ensure your virtual environment is activated in each n
 source .venv/bin/activate
 ```
 
-Once activated, you can convert text to speech by running the `main.py` script with the path to your input text file. You can choose to stream the audio or save it to a file.
+Once activated, you can convert text to speech by running the `main.py` script. It can accept input from a file or directly from `stdin` (piped text). You can choose to stream the audio or save it to a file.
 
-### Stream Audio
+### Input from File
+
+#### Save to File
+
+```bash
+./main.py your_text_file.txt
+```
+
+#### Stream Audio
 
 ```bash
 ./main.py your_text_file.txt --stream
 ```
 
-This will stream the audio directly to your speakers.
+### Input from Piped Text (stdin)
 
-### Save to File
+#### Stream Audio (e.g., first 5 lines of a file)
 
 ```bash
-./main.py your_text_file.txt
+cat your_text_file.txt | head -n 5 | ./main.py --stream
+```
+
+#### Save to File (e.g., entire file)
+
+```bash
+cat your_text_file.txt | ./main.py
 ```
 
 This will generate an MP3 file in the `out/` directory. The filename follows the pattern: `[voice]_[instructor]_[first_four_words_of_input]_[timestamp].mp3`.

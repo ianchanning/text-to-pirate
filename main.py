@@ -15,6 +15,7 @@
 
 import asyncio
 import argparse
+import sys
 from pathlib import Path
 from datetime import datetime
 
@@ -102,12 +103,15 @@ async def stream_out(text_input: str, voice: str, instructor: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert text to speech.")
-    parser.add_argument("input_file", type=str, help="Path to the input text file.")
+    parser.add_argument("input_file", type=str, nargs='?', help="Path to the input text file. If not provided, reads from stdin.")
     parser.add_argument("--stream", action="store_true", help="Stream audio instead of saving to file.")
     args = parser.parse_args()
 
-    with open(args.input_file, 'r') as f:
-        text_content = f.read()
+    if args.input_file:
+        with open(args.input_file, 'r') as f:
+            text_content = f.read()
+    else:
+        text_content = sys.stdin.read()
 
     voice_selection = reasonable_voices[2]
     instructor_selection = "pirate"
