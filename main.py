@@ -114,4 +114,4 @@ if __name__ == "__main__":
     if args.stream:
         asyncio.run(stream_out(text_content))
     else:
-        file_out(text_content))
+        file_out(text_content)
