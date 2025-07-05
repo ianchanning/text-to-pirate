@@ -29,7 +29,13 @@ To set up the development environment, follow these steps:
 
 ## Usage
 
-To convert text to speech, run the `main.py` script with the path to your input text file. You can choose to stream the audio or save it to a file.
+Before running `main.py`, ensure your virtual environment is activated in each new bash session:
+
+```bash
+source .venv/bin/activate
+```
+
+Once activated, you can convert text to speech by running the `main.py` script with the path to your input text file. You can choose to stream the audio or save it to a file.
 
 ### Stream Audio
 
