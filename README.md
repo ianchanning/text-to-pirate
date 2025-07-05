@@ -1,6 +1,19 @@
 # Text-to-Speech Project
 
-This project converts text to speech using OpenAI's TTS models.
+This project converts text to speech using OpenAI's TTS models, specifically tailored to generate pirate-style speech for any markdown blog post you feed it!
+
+## Quick Start
+
+Get up and running with these quick commands:
+
+```bash
+pip install uv  # If you don't have uv
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
+export OPENAI_API_KEY="your_api_key_here" # Replace with your actual key
+cat your_blog_post.md | head -n 5 | ./main.py --stream
+```
 
 ## Setup
 
@@ -23,8 +36,15 @@ To set up the development environment, follow these steps:
     ```
 
 3.  **Install Dependencies:**
+
     ```bash
     uv pip install -r requirements.txt
+    ```
+
+4.  **Set OpenAI API Key:**
+    The project requires your OpenAI API key. Set it as an environment variable:
+    ```bash
+    export OPENAI_API_KEY="your_api_key_here"
     ```
 
 ## Usage
