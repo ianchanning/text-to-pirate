@@ -75,10 +75,8 @@ reasonable_voices = [
     "sage", # Slower American Woman (Arquette) good emo, bad mad-scientist
 ]
 
-def file_out(text_input: str) -> None:
+def file_out(text_input: str, voice: str, instructor: str) -> None:
     # This is a small edit to demonstrate file changes.
-    voice = reasonable_voices[2]
-    instructor = "pirate"
     file_name_input = "_".join(text_input.split()[:4]).lower()
     timestamp = datetime.now().strftime('%Y%m%d_%H%M')
     file_name = f"{voice}_{instructor}_{file_name_input}_{timestamp}.mp3"
@@ -92,12 +90,12 @@ def file_out(text_input: str) -> None:
       response.stream_to_file(speech_file_path)
 
 
-async def stream_out(text_input: str) -> None:
+async def stream_out(text_input: str, voice: str, instructor: str) -> None:
     async with asyncopenai.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
-        voice=reasonable_voices[2],
+        voice=voice,
         input=text_input,
-        instructions=mad_scientist,
+        instructions=instructors[instructor],
         response_format="pcm",
     ) as response:
         await LocalAudioPlayer().play(response)
@@ -111,7 +109,10 @@ if __name__ == "__main__":
     with open(args.input_file, 'r') as f:
         text_content = f.read()
 
+    voice_selection = reasonable_voices[2]
+    instructor_selection = "pirate"
+
     if args.stream:
-        asyncio.run(stream_out(text_content))
+        asyncio.run(stream_out(text_content, voice_selection, instructor_selection))
     else:
-        file_out(text_content)
+        file_out(text_content, voice_selection, instructor_selection)
