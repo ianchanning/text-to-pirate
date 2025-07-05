@@ -79,8 +79,8 @@ def file_out() -> None:
     instructor = "pirate"
     file_name_input = "_".join(input.split()[:4]).lower()
     timestamp = datetime.now().strftime('%Y%m%d_%H%M')
-    file_name = f"{voice}_{file_name_input}_{instructor}_{timestamp}.mp3"
-    speech_file_path = Path(__file__).parent / file_name
+    file_name = f"{voice}_{instructor}_{file_name_input}_{timestamp}.mp3"
+    speech_file_path = Path(__file__).parent / "out" / file_name
     with openai.audio.speech.with_streaming_response.create(
       model="gpt-4o-mini-tts",
       voice=voice,
