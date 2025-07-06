@@ -115,18 +115,6 @@ Without it, ye'll be adrift!
 
 asyncopenai = AsyncOpenAI()
 
-# input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development. You're no longer designing deterministic systems where inputs map to predictable outputs. Instead, you're working with probabilistic systems which are inherently unpredictable.
-#
-# The key tool for managing this uncertainty is evals. Evals are the AI engineer's unit tests. They are how you wrangle predictability from a probabilistic system. They are an indispensable part of productionizing any AI app.
-#
-# Let's break down what evals are, and why AI apps need them so badly.
-#
-# Traditional software testing relies on deterministic relationships between inputs and outputs. Each component has a clear domain of responsibility:
-#
-# But LLM-powered systems are different. Every input goes through a complex transformation process that's hard to predict:
-#
-# In AI systems, no change is small. Their attention and transformation mechanisms are inscrutable."""
-
 pirate = """Voice: Deep and rugged, with a hearty, boisterous quality, like a seasoned sea captain who's seen many voyages.
 
 Tone: Friendly and spirited, with a sense of adventure and enthusiasm, making every detail feel like part of a grand journey.
@@ -159,9 +147,9 @@ instructors = {
 
 reasonable_voices = [
     "ballad",  # English man
-    "coral",  # American Woman (Juno) good emo, bad mad-scientist
-    "nova",  # American Woman (Older Juno) good emo, good mad-scientist
-    "sage",  # Slower American Woman (Arquette) good emo, bad mad-scientist
+    "coral",  # American Woman (Juno) good emo, bad mad-scientist, bad pirate
+    "nova",  # American Woman (Older Juno) good emo, good mad-scientist, good pirate
+    "sage",  # Slower American Woman good emo, bad mad-scientist, bad pirate
 ]
 
 
