@@ -154,6 +154,9 @@ def file_out(text_input: str, voice: str, instructor: str) -> None:
     ) as response:
       response.stream_to_file(speech_file_path)
 
+    # (⊕) Announce the location of our newly plundered treasure.
+    print(f"Ahoy! Yer audio treasure be saved at: {os.path.relpath(speech_file_path)}")
+
 
 async def stream_out(text_input: str, voice: str, instructor: str) -> None:
     async with asyncopenai.audio.speech.with_streaming_response.create(
