@@ -102,6 +102,7 @@ To run the tests:
 1.  **Ensure you are in the project root directory.**
 
 2.  **Run the `pip` installation test:**
+
     ```bash
     ./tests/test_pip_install.sh
     ```

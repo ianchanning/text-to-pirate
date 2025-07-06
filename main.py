@@ -22,9 +22,10 @@ from datetime import datetime
 
 # (⊕) The Inquisitor: A final, definitive check for environmental purity.
 # First, is a virtual environment even active?
-venv_path = os.getenv('VIRTUAL_ENV')
+venv_path = os.getenv("VIRTUAL_ENV")
 if not venv_path:
-    print("""
+    print(
+        """
 Halt, voyager! You're treading in the dangerous global Python lands.
 This script craves the sanctuary of a virtual environment.
 
@@ -33,17 +34,20 @@ Please consecrate your terminal session with:
     source .venv/bin/activate
 
 ...and then try your command again. Don't make me summon the dependency kraken.
-""", file=sys.stderr)
+""",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 # Second, if a venv is active, are we ACTUALLY USING IT?
 # This exposes the dark magic of `pyenv` overriding an active venv.
-expected_python_path = os.path.join(venv_path, 'bin', 'python')
+expected_python_path = os.path.join(venv_path, "bin", "python")
 current_python_path = sys.executable
 if os.path.realpath(current_python_path) != os.path.realpath(expected_python_path):
     # (⊕) Make the path relative for a cleaner, more portable command.
     relative_python_path = os.path.relpath(expected_python_path)
-    print(f"""
+    print(
+        f"""
 Halt, voyager! A paradox has been detected!
 
 You have an active virtual environment at:
@@ -58,7 +62,9 @@ To break the curse, you MUST invoke the venv's python by its relative path:
     {relative_python_path} main.py --stream
 
 Trust this path. It is the only way.
-""", file=sys.stderr)
+""",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 
@@ -69,7 +75,8 @@ from openai import AsyncOpenAI
 try:
     from openai.helpers import LocalAudioPlayer
 except ImportError:
-    print("""
+    print(
+        """
 
 Hold yer horses, matey! To stream the glorious pirate shanties (or, y'know, other voices),
 ye need the 'sounddevice' package. The OpenAI library keeps it separate to stay lightweight.
@@ -84,14 +91,16 @@ Using uv:
     
 Once that's done, run this script again and we'll make some noise!
 
-""", file=sys.stderr)
+""",
+        file=sys.stderr,
+    )
     sys.exit(1)
-
 
 
 # (⊕) A pirate needs their treasure! Check for the API key.
 if not os.getenv("OPENAI_API_KEY"):
-    print("""
+    print(
+        """
 Halt, voyager! Ye be missin' yer treasure map!
 Set yer OPENAI_API_KEY environment variable before ye set sail.
 
@@ -99,7 +108,9 @@ Example:
     export OPENAI_API_KEY="sk-your-secret-key-here"
 
 Without it, ye'll be adrift!
-""", file=sys.stderr)
+""",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 asyncopenai = AsyncOpenAI()
@@ -143,31 +154,34 @@ Delivery: Monotone with occasional sighs, drawn-out words, and subtle disdain, e
 instructors = {
     "pirate": pirate,
     "emo_teenager": emo_teenager,
-    "mad_scientist": mad_scientist
+    "mad_scientist": mad_scientist,
 }
 
 reasonable_voices = [
-    "ballad", # English man
-    "coral", # American Woman (Juno) good emo, bad mad-scientist
-    "nova", # American Woman (Older Juno) good emo, good mad-scientist
-    "sage", # Slower American Woman (Arquette) good emo, bad mad-scientist
+    "ballad",  # English man
+    "coral",  # American Woman (Juno) good emo, bad mad-scientist
+    "nova",  # American Woman (Older Juno) good emo, good mad-scientist
+    "sage",  # Slower American Woman (Arquette) good emo, bad mad-scientist
 ]
+
 
 def file_out(text_input: str, voice: str, instructor: str) -> None:
     # This is a small edit to demonstrate file changes.
     file_name_raw = "_".join(text_input.split()[:4]).lower()
     # (⊕) Sanitize the filename to cast out any devilish non-ASCII characters or filesystem fiends.
-    sanitized_filename = "".join(char for char in file_name_raw if char.isalnum() or char == '_').strip()
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M')
+    sanitized_filename = "".join(
+        char for char in file_name_raw if char.isalnum() or char == "_"
+    ).strip()
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     file_name = f"{voice}_{instructor}_{sanitized_filename}_{timestamp}.mp3"
     speech_file_path = Path(__file__).parent / "out" / file_name
     with openai.audio.speech.with_streaming_response.create(
-      model="gpt-4o-mini-tts",
-      voice=voice,
-      input=text_input,
-      instructions=instructors[instructor],
+        model="gpt-4o-mini-tts",
+        voice=voice,
+        input=text_input,
+        instructions=instructors[instructor],
     ) as response:
-      response.stream_to_file(speech_file_path)
+        response.stream_to_file(speech_file_path)
 
     # (⊕) Announce the location of our newly plundered treasure.
     print(f"Ahoy! Yer audio treasure be saved at: {os.path.relpath(speech_file_path)}")
@@ -183,14 +197,22 @@ async def stream_out(text_input: str, voice: str, instructor: str) -> None:
     ) as response:
         await LocalAudioPlayer().play(response)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert text to speech.")
-    parser.add_argument("input_file", type=str, nargs='?', help="Path to the input text file. If not provided, reads from stdin.")
-    parser.add_argument("--stream", action="store_true", help="Stream audio instead of saving to file.")
+    parser.add_argument(
+        "input_file",
+        type=str,
+        nargs="?",
+        help="Path to the input text file. If not provided, reads from stdin.",
+    )
+    parser.add_argument(
+        "--stream", action="store_true", help="Stream audio instead of saving to file."
+    )
     args = parser.parse_args()
 
     if args.input_file:
-        with open(args.input_file, 'r') as f:
+        with open(args.input_file, "r") as f:
             text_content = f.read()
     else:
         text_content = sys.stdin.read()
