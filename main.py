@@ -20,18 +20,44 @@ import os
 from pathlib import Path
 from datetime import datetime
 
-# (⊕) First, a sanity check. Are we even in the right dimension?
-# Let's see if a virtual environment is active by checking for the VIRTUAL_ENV sigil.
-if not os.getenv('VIRTUAL_ENV'):
+# (⊕) The Inquisitor: A final, definitive check for environmental purity.
+# First, is a virtual environment even active?
+venv_path = os.getenv('VIRTUAL_ENV')
+if not venv_path:
     print("""
-Halt, traveler! You're treading in the dangerous global Python lands.
+Halt, voyager! You're treading in the dangerous global Python lands.
 This script craves the sanctuary of a virtual environment.
 
-It seems you haven't activated it. Please consecrate your terminal session with:
+Please consecrate your terminal session with:
 
     source .venv/bin/activate
 
 ...and then try your command again. Don't make me summon the dependency kraken.
+""", file=sys.stderr)
+    sys.exit(1)
+
+# Second, if a venv is active, are we ACTUALLY USING IT?
+# This exposes the dark magic of `pyenv` overriding an active venv.
+expected_python_path = os.path.join(venv_path, 'bin', 'python')
+current_python_path = sys.executable
+if os.path.realpath(current_python_path) != os.path.realpath(expected_python_path):
+    # (⊕) Make the path relative for a cleaner, more portable command.
+    relative_python_path = os.path.relpath(expected_python_path)
+    print(f"""
+Halt, voyager! A paradox has been detected!
+
+You have an active virtual environment at:
+  {venv_path}
+
+...but you are currently running the script with a DIFFERENT python interpreter:
+  {current_python_path}
+
+This is the dark magic of `pyenv` at work, hijacking your session.
+To break the curse, you MUST invoke the venv's python by its relative path:
+
+    {relative_python_path} main.py --stream
+
+Trust this path. It is the only way.
 """, file=sys.stderr)
     sys.exit(1)
 
