@@ -197,6 +197,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "--stream", action="store_true", help="Stream audio instead of saving to file."
     )
+    parser.add_argument(
+        "--voice",
+        type=str,
+        choices=reasonable_voices,
+        default=reasonable_voices[2],  # Default to 'nova'
+        help="Specify the voice to use for speech generation.",
+    )
+    parser.add_argument(
+        "--instructor",
+        type=str,
+        choices=list(instructors.keys()),
+        default="pirate",
+        help="Specify the instructor persona for speech generation.",
+    )
     args = parser.parse_args()
 
     if args.input_file:
@@ -205,8 +219,8 @@ if __name__ == "__main__":
     else:
         text_content = sys.stdin.read()
 
-    voice_selection = reasonable_voices[2]
-    instructor_selection = "pirate"
+    voice_selection = args.voice
+    instructor_selection = args.instructor
 
     if args.stream:
         asyncio.run(stream_out(text_content, voice_selection, instructor_selection))
