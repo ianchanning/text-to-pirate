@@ -89,6 +89,19 @@ Once that's done, run this script again and we'll make some noise!
 
 asyncopenai = AsyncOpenAI()
 
+# (⊕) A pirate needs their treasure! Check for the API key.
+if not os.getenv("OPENAI_API_KEY"):
+    print("""
+Halt, voyager! Ye be missin' yer treasure map!
+Set yer OPENAI_API_KEY environment variable before ye set sail.
+
+Example:
+    export OPENAI_API_KEY="sk-your-secret-key-here"
+
+Without it, ye'll be adrift!
+""", file=sys.stderr)
+    sys.exit(1)
+
 # input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development."""
 
 # input = """As we discussed in our previous article, building with LLMs requires a fundamental shift in how you think about software development. You're no longer designing deterministic systems where inputs map to predictable outputs. Instead, you're working with probabilistic systems which are inherently unpredictable.
