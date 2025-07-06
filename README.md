@@ -4,8 +4,6 @@ This project converts text to speech using OpenAI's TTS models, specifically tai
 
 ## Quick Start
 
-Get up and running with these quick commands:
-
 ```bash
 pip install uv  # If you don't have uv
 uv venv
@@ -17,7 +15,7 @@ cat your_blog_post.md | head -n 5 | ./main.py --stream
 
 ## Setup
 
-To set up the development environment, follow these steps:
+We use `uv` by default, but `pip` has been tested too.
 
 1.  **Install `uv`:**
     If you don't have `uv` installed, you can install it using pip:
@@ -25,8 +23,6 @@ To set up the development environment, follow these steps:
     ```bash
     pip install uv
     ```
-
-    Or, for a more robust installation, refer to the official `uv` documentation.
 
 2.  **Create and Activate Virtual Environment:**
 
