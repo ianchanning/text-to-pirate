@@ -24,7 +24,7 @@ idna==3.10
     #   httpx
 jiter==0.10.0
     # via openai
-openai==1.93.0
+openai[voice_helpers]==1.93.0
     # via -r requirements.in
 pydantic==2.11.7
     # via openai
