@@ -142,9 +142,11 @@ reasonable_voices = [
 
 def file_out(text_input: str, voice: str, instructor: str) -> None:
     # This is a small edit to demonstrate file changes.
-    file_name_input = "_".join(text_input.split()[:4]).lower()
+    file_name_raw = "_".join(text_input.split()[:4]).lower()
+    # (⊕) Sanitize the filename to cast out any devilish non-ASCII characters or filesystem fiends.
+    sanitized_filename = "".join(char for char in file_name_raw if char.isalnum() or char == '_').strip()
     timestamp = datetime.now().strftime('%Y%m%d_%H%M')
-    file_name = f"{voice}_{instructor}_{file_name_input}_{timestamp}.mp3"
+    file_name = f"{voice}_{instructor}_{sanitized_filename}_{timestamp}.mp3"
     speech_file_path = Path(__file__).parent / "out" / file_name
     with openai.audio.speech.with_streaming_response.create(
       model="gpt-4o-mini-tts",
