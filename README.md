@@ -92,3 +92,23 @@ Currently, the hardcoded voice is `nova` (from `reasonable_voices[2]`) and the i
 ## Configuration
 
 - **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors` (pirate, mad_scientist, emo_teenager). You can modify these lists and the `voice_selection` and `instructor_selection` variables in `main.py` to experiment with different outputs.
+
+## Testing
+
+This project includes end-to-end test scripts to verify the installation and basic functionality using both `pip` and `uv`.
+
+To run the tests:
+
+1.  **Ensure you are in the project root directory.**
+
+2.  **Run the `pip` installation test:**
+    ```bash
+    ./tests/test_pip_install.sh
+    ```
+
+3.  **Run the `uv` installation test:**
+    ```bash
+    ./tests/test_uv_install.sh
+    ```
+
+These tests will create temporary directories, simulate a fresh installation, and check if the `main.py` script successfully generates an output file.
