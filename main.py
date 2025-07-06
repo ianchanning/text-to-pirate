@@ -16,12 +16,50 @@
 import asyncio
 import argparse
 import sys
+import os
 from pathlib import Path
 from datetime import datetime
 
+# (⊕) First, a sanity check. Are we even in the right dimension?
+# Let's see if a virtual environment is active by checking for the VIRTUAL_ENV sigil.
+if not os.getenv('VIRTUAL_ENV'):
+    print("""
+Halt, traveler! You're treading in the dangerous global Python lands.
+This script craves the sanctuary of a virtual environment.
+
+It seems you haven't activated it. Please consecrate your terminal session with:
+
+    source .venv/bin/activate
+
+...and then try your command again. Don't make me summon the dependency kraken.
+""", file=sys.stderr)
+    sys.exit(1)
+
+
 import openai
 from openai import AsyncOpenAI
-from openai.helpers import LocalAudioPlayer
+
+# (⇌) Now, let's check for our audio conduit. Even in a venv, one might forget the tools.
+try:
+    from openai.helpers import LocalAudioPlayer
+except ImportError:
+    print("""
+
+Hold yer horses, matey! To stream the glorious pirate shanties (or, y'know, other voices),
+ye need the 'sounddevice' package. The OpenAI library keeps it separate to stay lightweight.
+
+Choose yer weapon and install the necessary extras:
+
+Using pip:
+    pip install 'openai[voice_helpers]'
+    
+Using uv:
+    uv pip install 'openai[voice_helpers]'
+    
+Once that's done, run this script again and we'll make some noise!
+
+""", file=sys.stderr)
+    sys.exit(1)
 
 asyncopenai = AsyncOpenAI()
 
