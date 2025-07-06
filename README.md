@@ -83,11 +83,30 @@ cat your_text_file.txt | ./main.py
 
 This will generate an MP3 file in the `out/` directory. The filename follows the pattern: `[voice]_[instructor]_[first_four_words_of_input]_[timestamp].mp3`.
 
-Currently, the hardcoded voice is `nova` (from `reasonable_voices[2]`) and the instructor is `pirate`.
+The default voice is `nova` and the default instructor is `pirate`.
+
+### Optional Parameters
+
+You can customize the voice and instructor persona using the `--voice` and `--instructor` flags.
+
+-   `--voice`: Specifies the voice to use.
+    Available voices: `ballad`, `coral`, `nova`, `sage`.
+    Example: `--voice coral`
+
+-   `--instructor`: Specifies the instructor persona.
+    Available instructors: `pirate`, `mad_scientist`, `emo_teenager`.
+    Example: `--instructor mad_scientist`
+
+#### Example Usage with Optional Parameters
+
+```bash
+./main.py your_text_file.txt --voice ballad --instructor mad_scientist
+cat your_text_file.txt | head -n 5 | ./main.py --stream --voice nova --instructor emo_teenager
+```
 
 ## Configuration
 
-- **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors` (pirate, mad_scientist, emo_teenager). You can modify these lists and the `voice_selection` and `instructor_selection` variables in `main.py` to experiment with different outputs.
+-   **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors`. You can modify these lists in `main.py` to experiment with different outputs.
 
 ## Testing
 
