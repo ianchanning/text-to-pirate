@@ -22,13 +22,11 @@ def clean_markdown_for_speech(markdown_content):
     return cleaned_content
 
 if __name__ == "__main__":
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
-
-    with open(input_file, 'r') as f:
-        content = f.read()
-
+    # Read all input from stdin
+    content = sys.stdin.read()
+    
+    # Process the content
     cleaned_content = clean_markdown_for_speech(content)
-
-    with open(output_file, 'w') as f:
-        f.write(cleaned_content)
+    
+    # Print the result to stdout
+    print(cleaned_content)
