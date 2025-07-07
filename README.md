@@ -108,6 +108,28 @@ cat your_text_file.txt | head -n 5 | ./main.py --stream --voice nova --instructo
 
 -   **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors`. You can modify these lists in `main.py` to experiment with different outputs.
 
+## Markdown Cleaning
+
+To improve the quality of the text-to-speech output, a `clean_markdown.py` script is included. This script is designed to be piped into `main.py` to preprocess markdown content before it's converted to audio. It makes the text more listenable by removing non-verbal elements.
+
+### How it Works
+
+The script performs the following cleaning operations:
+
+1.  **Removes URLs:** It strips out the URL part of a markdown link, leaving only the descriptive text. For example, `[Google](https://google.com)` becomes `Google`.
+2.  **Extracts Image Alt Text:** It takes the alt text from an image link and uses that as the spoken text. For example, `![A picture of a cat](cat.jpg)` becomes `A picture of a cat`.
+3.  **Strips HTML Tags:** All HTML tags are removed.
+4.  **Handles Code Blocks:** It replaces entire code blocks with the phrase "a code snippet follows" to avoid reading code aloud.
+5.  **Removes Structural Markers:** It removes heading markers (`#`), and list markers (`*`, `-`) from the start of lines.
+
+### Example Usage
+
+You can pipe your markdown file through the cleaner before sending it to the main script:
+
+```bash
+cat your_blog_post.md | ./clean_markdown.py | ./main.py --stream
+```
+
 ## Testing
 
 This project includes end-to-end test scripts to verify the installation and basic functionality using both `pip` and `uv`.
