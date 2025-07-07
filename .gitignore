@@ -5,6 +5,5 @@ out
 # ignore any input/output files
 *.wav
 *.mp3
-*.md
 *.txt
 *.html
