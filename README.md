@@ -10,7 +10,7 @@ uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
 export OPENAI_API_KEY="your_api_key_here" # Replace with your actual key
-cat your_blog_post.md | head -n 5 | ./main.py --stream
+cat your_blog_post.md | head -n 5 | ./main.py
 ```
 
 ## Setup
@@ -58,13 +58,13 @@ Once activated, you can convert text to speech by running the `main.py` script. 
 #### Save to File
 
 ```bash
-./main.py your_text_file.txt
+./main.py your_text_file.txt --save
 ```
 
 #### Stream Audio
 
 ```bash
-./main.py your_text_file.txt --stream
+./main.py your_text_file.txt
 ```
 
 ### Input from Piped Text (stdin)
@@ -72,13 +72,13 @@ Once activated, you can convert text to speech by running the `main.py` script. 
 #### Stream Audio (e.g., first 5 lines of a file)
 
 ```bash
-cat your_text_file.txt | head -n 5 | ./main.py --stream
+cat your_text_file.txt | head -n 5 | ./main.py
 ```
 
 #### Save to File (e.g., entire file)
 
 ```bash
-cat your_text_file.txt | ./main.py
+cat your_text_file.txt | ./main.py --save
 ```
 
 This will generate an MP3 file in the `out/` directory. The filename follows the pattern: `[voice]_[instructor]_[first_four_words_of_input]_[timestamp].mp3`.
@@ -89,24 +89,24 @@ The default voice is `nova` and the default instructor is `pirate`.
 
 You can customize the voice and instructor persona using the `--voice` and `--instructor` flags.
 
--   `--voice`: Specifies the voice to use.
-    Available voices: `ballad`, `coral`, `nova`, `sage`.
-    Example: `--voice coral`
+- `--voice`: Specifies the voice to use.
+  Available voices: `ballad`, `coral`, `nova`, `sage`.
+  Example: `--voice coral`
 
--   `--instructor`: Specifies the instructor persona.
-    Available instructors: `pirate`, `mad_scientist`, `emo_teenager`.
-    Example: `--instructor mad_scientist`
+- `--instructor`: Specifies the instructor persona.
+  Available instructors: `pirate`, `mad_scientist`, `emo_teenager`.
+  Example: `--instructor mad_scientist`
 
 #### Example Usage with Optional Parameters
 
 ```bash
 ./main.py your_text_file.txt --voice ballad --instructor mad_scientist
-cat your_text_file.txt | head -n 5 | ./main.py --stream --voice nova --instructor emo_teenager
+cat your_text_file.txt | head -n 5 | ./main.py --voice nova --instructor emo_teenager
 ```
 
 ## Configuration
 
--   **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors`. You can modify these lists in `main.py` to experiment with different outputs.
+- **Voices and Instructors:** The `main.py` script contains predefined `reasonable_voices` and `instructors`. You can modify these lists in `main.py` to experiment with different outputs.
 
 ## Markdown Cleaning
 
@@ -127,7 +127,7 @@ The script performs the following cleaning operations:
 You can pipe your markdown file through the cleaner before sending it to the main script:
 
 ```bash
-cat your_blog_post.md | ./clean_markdown.py | ./main.py --stream
+cat your_blog_post.md | ./clean_markdown.py | ./main.py
 ```
 
 ## Testing

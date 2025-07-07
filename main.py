@@ -195,7 +195,7 @@ if __name__ == "__main__":
         help="Path to the input text file. If not provided, reads from stdin.",
     )
     parser.add_argument(
-        "--stream", action="store_true", help="Stream audio instead of saving to file."
+        "--save", action="store_true", help="Save audio to a file instead of streaming."
     )
     parser.add_argument(
         "--voice",
@@ -222,7 +222,7 @@ if __name__ == "__main__":
     voice_selection = args.voice
     instructor_selection = args.instructor
 
-    if args.stream:
-        asyncio.run(stream_out(text_content, voice_selection, instructor_selection))
-    else:
+    if args.save:
         file_out(text_content, voice_selection, instructor_selection)
+    else:
+        asyncio.run(stream_out(text_content, voice_selection, instructor_selection))
