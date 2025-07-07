@@ -2,6 +2,7 @@
 CONVENTIONS.md
 GEMINI.md
 out
+in
 # ignore any input/output files
 *.wav
 *.mp3
