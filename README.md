@@ -55,16 +55,16 @@ Once activated, you can convert text to speech by running the `main.py` script. 
 
 ### Input from File
 
-#### Save to File
-
-```bash
-./main.py your_text_file.txt --save
-```
-
 #### Stream Audio
 
 ```bash
 ./main.py your_text_file.txt
+```
+
+#### Save to File
+
+```bash
+./main.py your_text_file.txt --save
 ```
 
 ### Input from Piped Text (stdin)
