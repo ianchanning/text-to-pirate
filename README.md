@@ -1,6 +1,6 @@
-# Text-to-Pirate
+# PROJECT CHIMERA: Text-to-Pirate
 
-This project converts text to speech using OpenAI's TTS models, specifically tailored to generate pirate-style speech for any markdown blog post you feed it.
+This project converts text to speech using OpenAI's TTS models, specifically tailored to generate pirate/emo/mad-style speech for any markdown blog post you feed it.
 
 ## Quick Start
 
