@@ -44,6 +44,7 @@ echo "Ahoy there, matey!" | python main.py
 
 # 5. Check if the output file was created
 # We just check if the 'out' directory is not empty
+echo "Ahoy there, matey!" | python main.py --save
 if [ -z "$(ls -A out)" ]; then
   echo "--- ❌ TEST FAILED: No output file was created! ---"
   exit 1
