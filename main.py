@@ -140,6 +140,10 @@ reasonable_voices = [
 
 
 def file_out(text_input: str, voice: str, instructor: str) -> None:
+    print(
+        "(I) Sending a parrot to the OpenAI galleon with your message...",
+        file=sys.stderr,
+    )
     # This is a small edit to demonstrate file changes.
     file_name_raw = "_".join(text_input.split()[:4]).lower()
     # (⊕) Sanitize the filename to cast out any devilish non-ASCII characters or filesystem fiends.
@@ -162,6 +166,10 @@ def file_out(text_input: str, voice: str, instructor: str) -> None:
 
 
 async def stream_out(text_input: str, voice: str, instructor: str) -> None:
+    print(
+        "(I) Sending a parrot to the OpenAI galleon with your message...",
+        file=sys.stderr,
+    )
     async with asyncopenai.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
         voice=voice,
