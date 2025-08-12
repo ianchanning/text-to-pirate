@@ -5,11 +5,14 @@ import sys
 import os
 from pathlib import Path
 from datetime import datetime
+import threading
+import time
+import itertools
 
 # (⊕) The Inquisitor: A final, definitive check for environmental purity.
 # First, is a virtual environment even active?
-venv_path = os.getenv("VIRTUAL_ENV")
-if not venv_path:
+virtual_env_path = os.getenv("VIRTUAL_ENV")
+if not virtual_env_path:
     print(
         """
 Halt, voyager! You're treading in the dangerous global Python lands.
@@ -27,7 +30,7 @@ Please consecrate your terminal session with:
 
 # Second, if a venv is active, are we ACTUALLY USING IT?
 # This exposes the dark magic of `pyenv` overriding an active venv.
-expected_python_path = os.path.join(venv_path, "bin", "python")
+expected_python_path = os.path.join(virtual_env_path, "bin", "python")
 current_python_path = sys.executable
 if os.path.realpath(current_python_path) != os.path.realpath(expected_python_path):
     # (⊕) Make the path relative for a cleaner, more portable command.
@@ -37,7 +40,7 @@ if os.path.realpath(current_python_path) != os.path.realpath(expected_python_pat
 Halt, voyager! A paradox has been detected!
 
 You have an active virtual environment at:
-  {venv_path}
+  {virtual_env_path}
 
 ...but you are currently running the script with a DIFFERENT python interpreter:
   {current_python_path}
@@ -105,9 +108,9 @@ pirate = """Voice: Deep and rugged, with a hearty, boisterous quality, like a se
 
 Tone: Friendly and spirited, with a sense of adventure and enthusiasm, making every detail feel like part of a grand journey.
 
-Dialect: Classic pirate speech with old-timey nautical phrases, dropped "g"s, and exaggerated "Arrrs" to stay in character.
+Dialect: Classic pirate speech with old-timey nautical phrases, dropped \"g\"s, and exaggerated \"Arrrs\" to stay in character.
 
-Pronunciation: Rough and exaggerated, with drawn-out vowels, rolling "r"s, and a rhythm that mimics the rise and fall of ocean waves.
+Pronunciation: Rough and exaggerated, with drawn-out vowels, rolling \"r\"s, and a rhythm that mimics the rise and fall of ocean waves.
 
 Features: Uses playful pirate slang, adds dramatic pauses for effect, and blends hospitality with seafaring charm to keep the experience fun and immersive."""
 
@@ -139,6 +142,68 @@ reasonable_voices = [
 ]
 
 
+class Spinner:
+    """A simple terminal spinner that runs in a separate thread."""
+
+    def __init__(self, message: str = "Loading...", delay: float = 0.1):
+        self.spinner = itertools.cycle(["-", "/", "|", "\\"])
+        self.delay = delay
+        self.busy = False
+        self.spinner_visible = False
+        self.message = message
+        self.thread = threading.Thread(target=self._run)
+
+    def _run(self):
+        while self.busy:
+            spinner_char = next(self.spinner)
+            sys.stderr.write(f"\r{self.message} {spinner_char}")
+            sys.stderr.flush()
+            self.spinner_visible = True
+            time.sleep(self.delay)
+
+    def start(self):
+        self.busy = True
+        self.thread.start()
+
+    def stop(self):
+        self.busy = False
+        self.thread.join()
+        if self.spinner_visible:
+            # Clear the spinner line
+            sys.stderr.write("\r" + " " * (len(self.message) + 2) + "\r")
+            sys.stderr.flush()
+
+
+class BroadcastingAudioStream:
+    """
+    A wrapper for the OpenAI audio stream that prints a message
+    the first time audio data is requested.
+    """
+
+    def __init__(self, audio_stream):
+        self._audio_stream = audio_stream
+        self._broadcasted = False
+
+    async def iter_bytes(self, chunk_size: int = 4096):
+        """
+        An async generator that yields audio chunks.
+        The first time it's called, it prints a message to stderr.
+        """
+        if not self._broadcasted:
+            # The spinner can leave a partial line, so we add a newline
+            # to ensure our message starts on a fresh line.
+            sys.stderr.write("\n")
+            sys.stderr.flush()
+            print(
+                "(I) Transmission received! Broadcasting the shanty now...",
+                file=sys.stderr,
+            )
+            self._broadcasted = True
+
+        async for chunk in self._audio_stream.iter_bytes(chunk_size=chunk_size):
+            yield chunk
+
+
 def file_out(text_input: str, voice: str, instructor: str) -> None:
     print(
         "(I) Sending a parrot to the OpenAI galleon with your message...",
@@ -153,13 +218,22 @@ def file_out(text_input: str, voice: str, instructor: str) -> None:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     file_name = f"{voice}_{instructor}_{sanitized_filename}_{timestamp}.mp3"
     speech_file_path = Path(__file__).parent / "out" / file_name
-    with openai.audio.speech.with_streaming_response.create(
-        model="gpt-4o-mini-tts",
-        voice=voice,
-        input=text_input,
-        instructions=instructors[instructor],
-    ) as response:
-        response.stream_to_file(speech_file_path)
+
+    spinner = Spinner("(I) Brewing the audio grog...")
+    spinner.start()
+    try:
+        with openai.audio.speech.with_streaming_response.create(
+            model="gpt-4o-mini-tts",
+            voice=voice,
+            input=text_input,
+            instructions=instructors[instructor],
+        ) as response:
+            # (⊕) Manually stream to file to keep our spinner alive.
+            with open(speech_file_path, "wb") as f:
+                for chunk in response.iter_bytes(chunk_size=4096):
+                    f.write(chunk)
+    finally:
+        spinner.stop()
 
     # (⊕) Announce the location of our newly plundered treasure.
     print(f"Ahoy! Yer audio treasure be saved at: {os.path.relpath(speech_file_path)}")
@@ -177,7 +251,9 @@ async def stream_out(text_input: str, voice: str, instructor: str) -> None:
         instructions=instructors[instructor],
         response_format="pcm",
     ) as response:
-        await LocalAudioPlayer().play(response)
+        broadcasting_stream = BroadcastingAudioStream(response)
+        await LocalAudioPlayer().play(broadcasting_stream)
+
 
 
 if __name__ == "__main__":
